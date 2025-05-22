@@ -1,0 +1,779 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Duygu Analizi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    @keyframes fadeInButton {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+    .animated-text {
+  font-size: 48px;
+  font-weight: 700;
+  color: #00e5ff;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  text-align: center;
+  letter-spacing: 2px;
+  z-index: 2;
+}
+
+.animated-text span {
+  opacity: 0;
+  display: inline-block;
+  animation: fadeLetter 0.05s forwards;
+}
+
+@keyframes fadeLetter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      overflow: hidden;
+      height: 100vh;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    h1 {
+  position: absolute; /* relative yerine absolute */
+  top: -10px; /* Yukarı taşıdık (önce -30px'ti) */
+  font-size: 48px;
+  font-weight: 700;
+  color: #00e5ff;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-align: center;
+  letter-spacing: 2px;
+  z-index: 2;
+  animation: fadeIn 1s ease-out;
+}
+
+    h1 span {
+  font-style: italic;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  color: #00e5ff;
+  text-shadow:
+    0 0 3px #00e5ff,
+    0 0 6px #00e5ff,
+    0 0 12px #00bcd4;
+}
+
+
+
+.container {
+  margin-top: 80px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  padding: 30px;
+  width: 800px; /* Enini daralt */
+  height: 500px; /* Boyunu uzat */
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  position: relative;
+  z-index: 1;
+  border: 2px solid #00e5ff;
+  animation: slideUp 1.5s ease-out;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Üste hizala */
+  align-items: center;
+}
+
+    .circle {
+       width: 250px; /* İsteğe bağlı olarak biraz küçülttük */
+      height: 250px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin: 0 auto;
+      border: 3px solid #00e5ff;
+      position: relative;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    .circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #video {
+  background-color: black; /* Başlangıçta siyah arka plan */
+}
+
+
+    #emotion {
+      font-size: 36px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #00e5ff;
+      text-transform: uppercase;
+      animation: fadeIn 2s ease-out;
+    }
+
+    #final-box {
+      margin-top: 40px;
+      display: none;
+    }
+
+    #final-box button {
+      margin: 40px;
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #00e5ff;
+      border: none;
+      border-radius: 50px;
+      color: #0d2538;
+      text-transform: uppercase;
+      font-weight: bold;
+      transition: transform 0.3s ease, background-color 0.3s;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+    }
+
+    #final-box button:hover {
+      transform: scale(1.1);
+      background-color: #0288d1;
+    }
+
+    /* Animasyonlar */
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      0% { transform: translateY(100px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.4); }
+      100% { box-shadow: 0 0 80px rgba(0, 255, 255, 0.8); }
+    }
+
+    /* Geometrik Şekiller ve Arka Plan Animasyonu */
+    @keyframes colorFlow {
+      0% { background-color: #00e5ff; }
+      25% { background-color: #ff4081; }
+      50% { background-color: #00e676; }
+      75% { background-color: #ff9100; }
+      100% { background-color: #00e5ff; }
+    }
+
+    .moving-shape {
+      position: absolute;
+      background-color: rgba(0, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: moveShape 15s ease-in-out infinite;
+    }
+
+    .shape-one {
+      width: 200px;
+      height: 200px;
+      top: 10%;
+      left: 15%;
+      animation-duration: 12s;
+    }
+
+    .shape-two {
+      width: 150px;
+      height: 150px;
+      top: 50%;
+      right: 5%;
+      animation-duration: 10s;
+    }
+
+    @keyframes moveShape {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(100vw, 100vh); }
+      100% { transform: translate(0, 0); }
+    }
+    #bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100vw;
+  min-height: 100vh;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  opacity: 1; /* İsteğe göre oynat */
+}
+@keyframes fadeLetterIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeLetterOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+
+  
+}
+/* Buton stilini güncelle */
+#start-btn {
+  margin-top: 30px;
+  padding: 20px 40px;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 40px;
+  background-color: #00e5ff;
+  color: #0d2538;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff, 0 0 45px #00e5ff;
+  animation: heartbeat 1.5s infinite;
+  transition: transform 0.3s ease;
+}
+
+
+#start-btn:hover {
+  transform: scale(1.05);
+}
+
+#countdown {
+  color: #00e5ff;
+  font-weight: bold;
+  animation: fadeIn 1s ease;
+}
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
+  }
+  25% {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00e5ff, 0 0 40px #00e5ff;
+  }
+  50% {
+    transform: scale(1);
+    box-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
+  }
+  75% {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px #00e5ff, 0 0 50px #00e5ff;
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 15px #00e5ff, 0 0 30px #00e5ff;
+  }
+}
+
+.button-container button {
+  margin: 10px;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 40px;
+  background-color: #00e5ff;
+  color: #0d2538;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  text-transform: uppercase;
+  transition: transform 0.3s ease, background-color 0.3s;
+  animation: fadeInButton 1s ease forwards;
+}
+
+.button-container button:hover {
+  transform: scale(1.05);
+  background-color: #0288d1;
+}
+
+#emotionSentence {
+  margin-top: 10px;
+  font-size: larger;
+}
+
+#whyButtons{
+  margin-top: 20px;
+
+}
+
+
+  </style>
+</head>
+<body>
+  <video autoplay muted loop id="bg-video">
+    <source src="{{ url_for('static', filename='videos/background.mp4') }}" type="video/mp4">
+  </video>
+  
+  <h1 class="animated-text">SOULWARE'E HOŞGELDİN...</h1>
+  <h2 id="animatedText"></h2>
+
+
+
+  <div class="moving-shape shape-one"></div>
+  <div class="moving-shape shape-two"></div>
+
+  <div class="container">
+    <div class="circle">
+      <img id="video" src=""  style="background-color: black;">    </div>
+    <div id="emotion-section">
+      <div id="ready-question" class="animated-text" style="display: none;"></div>
+
+      <button id="start-btn" style="display: none;">Hazırım!</button>
+      <div id="countdown" style="font-size: 48px; margin-top: 20px; display: none;"></div>
+      <div id="emotion" style="margin-top: 20px;"></div>
+      <div></div>
+
+    </div>
+    <div id="scenario" class="scenario-container"></div>
+    <div id="emotionSentence" class="sentence"></div>
+    <div id="whySentence" class="sentence"></div>
+    <div id="whyButtons" class="button-container"></div>
+
+    <div id="final-box">
+      <p id="question"></p>
+      
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+  const h1 = document.querySelector(".animated-text");
+  const originalText = "SOULWARE'E HOŞGELDİN...";
+  const secondText = "Hadi bugün nasıl hissettiğine bakalım...";
+  const emotionSection = document.getElementById("emotion-section");
+  const startBtn = document.getElementById("start-btn");
+  const countdown = document.getElementById("countdown");
+
+  h1.innerHTML = "";
+  animateTextIn(originalText, () => {
+  setTimeout(() => {
+    animateTextOut(() => {
+      animateTextIn(secondText, () => {
+        // Buraya yeni bir setTimeout ekliyoruz
+        setTimeout(() => {
+  startBtn.style.display = "inline-block";
+  startBtn.style.animation = "fadeInButton 1s ease forwards";
+}, 1500);
+
+      });
+    });
+  }, 2500);
+});
+
+});
+
+
+
+    const socket = io();
+    const video = document.getElementById("video");
+    const emotionDiv = document.getElementById("emotion");
+    const finalBox = document.getElementById("final-box");
+    const question = document.getElementById("question");
+
+    let shownFinal = false;
+    let finalEmotion = null;
+
+    socket.on("video_feed", function (data) {
+      video.src = 'data:image/jpeg;base64,' + data.data;
+      emotionDiv.textContent = "Duygu: " + data.emotion;
+      emotionDiv.style.display = "block";
+
+
+      if (!video.src || video.src === "") {
+  video.style.backgroundColor = "transparent"; // Kamera görüntüsü geldiğinde siyah arka planı kaldır
+}
+
+
+      if (!shownFinal && data.final_emotion) {
+     finalEmotion = data.final_emotion;
+     // question.textContent = `Neden "${finalEmotion}" hissediyorsun? Sebebi nedir?`;
+     finalBox.style.display = "block";
+     shownFinal = true;
+
+     showEmotionScenario(finalEmotion);
+
+     } 
+    });
+
+    function goToPlaylist(sebep) {
+      let url = "";
+
+      if (finalEmotion === "Happy" && sebep === "güzel haber") {
+        url = "https://open.spotify.com/playlist/17PrsoUcODLshGPXRK343u?si=DtZcLscNT4GSBfkZnI4-pg&pi=KXAv5Lt7TDWrv";
+      }
+      else if (finalEmotion === "Happy" && sebep === "sevdiğim biri") {
+        url = "https://open.spotify.com/playlist/6oPaVRv1VgUBXTm1zFmyxg ";
+      }
+      else if (finalEmotion === "Happy" && sebep === "başarı") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC";
+    
+      }
+      else if (finalEmotion === "Happy" && sebep === "içimden geldi") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC";
+
+      }
+      else if (finalEmotion === "Sad" && sebep === "aile") {
+        url = "https://open.spotify.com/playlist/5DzNc87W6lj0eCzNeJLU2X ";
+      }
+      else if (finalEmotion === "Sad" && sebep === "iş") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DX3YSRoSdA634";
+      }
+      else if (finalEmotion === "Sad" && sebep === "yorgunluk") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DX7qK8ma5wgG1";
+      }
+      else if (finalEmotion === "Sad" && sebep === "sebepsiz") {
+        urls = "https://open.spotify.com/playlist/37i9dQZF1DXbvABJXBIyiY";
+
+      }
+      else if (finalEmotion === "Surprise" && sebep === "bir haber") {
+        url = "https://open.spotify.com/playlist/1bnfAw7U6cPJ2MVK9nTzvS "
+      }
+      else if (finalEmotion === "Surprise" && sebep === "biriyle karşılaştım") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DWZQAxqWLqL0T";
+      }
+      else if (finalEmotion === "Surprise" && sebep === "sürpriz") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DWVvYIkjA2aQO"
+      }
+      else if (finalEmotion === "Surprise" && sebep === "kafam karıştı") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DX0hJTZ5xQFzx";
+      }
+      else if (finalEmotion === "Anger" && sebep === "kırgınlık") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DX8mB3p2V78Vbk1";
+      }
+      else if (finalEmotion === "Anger" && sebep === "haksızlık") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DWV7Ez8n5A4zF";
+      }
+      else if (finalEmotion === "Anger" && sebep === "tatsız bir olay") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DX3t8lJ5wF4e8"
+      }
+      else if (finalEmotion === "Anger" && sebep === "gerginlik") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DX9YwqI7c3W4h";
+
+      }
+      else if (finalEmotion === "Neutral" && sebep === "pop") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DWUa8ZRTfalHk";
+      }
+      else if (finalEmotion === "Neutral" && sebep === "rock") {
+        url = " https://open.spotify.com/playlist/37i9dQZF1DWXRqgorJj26U";
+      }
+      else if (finalEmotion === "Neutral" && sebep === "rap") {
+        url = " https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd";
+      }
+      else if (finalEmotion === "Neutral" && sebep === "karışık") {
+        url = "https://open.spotify.com/playlist/37i9dQZF1DX5Ejj0EkURtP";
+      }
+      else {
+        url = "https://open.spotify.com/";
+      }
+
+      window.open(url, "_blank");
+    }
+    function animateTextIn(text, callback) {
+  const h1 = document.querySelector(".animated-text");
+  h1.innerHTML = "";
+  [...text].forEach((char, index) => {
+    const span = document.createElement("span");
+    span.textContent = char === " " ? "\u00A0" : char;
+    span.style.opacity = "0";
+    span.style.display = "inline-block";
+    span.style.animation = `fadeLetterIn 0.05s forwards`;
+    span.style.animationDelay = `${index * 0.05}s`;
+    h1.appendChild(span);
+  });
+
+  if (callback) {
+    setTimeout(callback, text.length * 50 + 500);
+  }
+}
+
+function animateTextOut(callback) {
+  const spans = document.querySelectorAll(".animated-text span");
+  spans.forEach((span, index) => {
+    span.style.animation = `fadeLetterOut 0.05s forwards`;
+    span.style.animationDelay = `${index * 0.05}s`;
+  });
+
+  if (callback) {
+    setTimeout(callback, spans.length * 50 + 500);
+  }
+}
+function animateDynamicText(text, elementId, speed = 50) {
+  const element = document.getElementById(elementId);
+  element.innerHTML = "";
+  let i = 0;
+
+  function type() {
+    if (i < text.length) {
+      const span = document.createElement("span");
+      const char = text.charAt(i) === " " ? "\u00A0" : text.charAt(i);
+      span.textContent = char;
+      span.style.opacity = "0";
+      span.style.display = "inline-block";
+      span.style.animation = `fadeLetterIn 0.05s forwards`;
+      span.style.animationDelay = `${i * 0.05}s`;
+      element.appendChild(span);
+      i++;
+      setTimeout(type, speed);
+    }
+  }
+
+  type();
+}
+
+
+const h1 = document.querySelector(".animated-text");
+const emotionSection = document.getElementById("emotion-section");
+const startBtn = document.getElementById("start-btn");
+const countdown = document.getElementById("countdown");
+
+startBtn.addEventListener("click", () => {
+  // Önce kullanıcıdan izin iste
+  navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+    // Kamera erişimi verildi → geri sayımı başlat
+    stream.getTracks().forEach(track => track.stop()); // Kamerayı backend'e bırak
+    animateTextOut(() => {
+      animateTextIn("Öyleyse başlıyoruz...", () => {
+        startBtn.style.display = "none";
+        startCountdown(3);
+      });
+    });
+  }).catch(err => {
+    alert("Kamera izni vermen gerekiyor.");
+  });
+});
+
+
+function startCountdown(n) {
+  if (n === 0) {
+    countdown.style.display = "none";
+    requestCameraAccess();
+    return;
+  }
+
+  countdown.textContent = n;
+  countdown.style.display = "block";
+  setTimeout(() => {
+    startCountdown(n - 1);
+  }, 1000);
+}
+
+function requestCameraAccess() {
+  navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+    const tracks = stream.getTracks();
+    tracks.forEach(track => track.stop()); // Kamerayı kapat, çünkü backend açacak
+    socket.emit('start_camera'); // Server'a sinyal gönder
+  }).catch(err => {
+    alert("Kamera izni gerekli.");
+  });
+}
+
+const emotionScenarios = {
+    Sad: {
+        messages: [
+            "Senin bugün biraz üzgün olduğunu hissediyorum...",
+            "Belki de bir şeyler üst üste geldi...",
+            "Ne ile ilgili olduğunu seç ve müziğin tadını çıkar!"
+        ],
+        buttons: ["aile", "iş", "yorgunluk", "sebepsiz"]
+    },
+    Happy: {
+        messages: [
+            "Mutlu olduğunu hissediyorum...",
+            "Parlıyorsun bugün...",
+            "Sebebini paylaş ve müziğin tadını çıkar!"
+        ],
+        buttons: ["güzel haber", "sevdiğim biri", "başarı", "içimden geldi"]
+    },
+    Surprise: {
+        messages: [
+                   "Sanki bir şey seni şaşırtmış... ",
+                   "Ne oldu beklenmedik bir şey mi?"
+                  ],
+        buttons: ["bir haber", "biriyle karşılaştım", "sürpriz", "kafam karıştı"]
+    },
+    Anger: {
+        messages: [
+            "Bir gerginlik seziyorum...",
+            "İçinde biraz öfke mi var?",
+            "Nedir bunun kaynağı?"
+        ],
+        buttons: ["kırgınlık", "haksızlık", "tatsız bir olay", "gerginlik"]
+    },
+    Neutral: {
+        messages: ["Bugün biraz doğal görünüyorsun.",
+                   "Peki ne tür şarkıların modundasın?",
+      ],
+        buttons: ["pop", "rock", "rap", "karışık"]
+    }
+};
+
+function showEmotionScenario(emotion) {
+  const container = document.getElementById("scenario");
+  container.innerHTML = "";
+
+  const emotionSentence = document.getElementById("emotionSentence");
+  const whyButtons = document.getElementById("whyButtons");
+
+  const scenario = emotionScenarios[emotion];
+  if (!scenario) return;
+
+  let index = 0;
+  function showNextMessage() {
+    if (index < scenario.messages.length) {
+      const message = scenario.messages[index];
+      animateDynamicText(message, "emotionSentence");
+
+      // Her harf için 50ms + 500ms ek süre
+      const delay = message.length * 50 + 1000;
+      index++;
+      setTimeout(showNextMessage, delay);
+    } else {
+      // Cümleler bittikten sonra butonları göster
+      whyButtons.innerHTML = "";
+      scenario.buttons.forEach(reason => {
+        const button = document.createElement("button");
+        button.textContent = reason;
+        button.onclick = () => goToPlaylist(reason);
+        whyButtons.appendChild(button);
+      });
+    }
+  }
+
+  showNextMessage();
+}
+
+
+
+
+function redirectToRandomPlaylist(emotion, reason) {
+    const links = {
+        Sad: {
+            aile: ["https://https://open.spotify.com/playlist/37i9dQZF1DX5Ejj0EkURtP", "https://link2"],
+            iş: ["https://link3"],
+            yorgunluk: ["https://link4"],
+            sebepsiz: ["https://link5"]
+        },
+        
+        // diğer duygular...
+    };
+
+    const options = links[emotion]?.[reason] || [];
+    if (options.length > 0) {
+        const randomLink = options[Math.floor(Math.random() * options.length)];
+        window.location.href = randomLink;
+    } else {
+        alert("Henüz bağlantı eklenmedi.");
+    }
+}
+
+
+function showEmotionFlow(emotion) {
+    const emotionSentenceDiv = document.getElementById('emotionSentence');
+    const whySentenceDiv = document.getElementById('whySentence');
+    const whyButtonsDiv = document.getElementById('whyButtons');
+
+    // Eski cümleleri ve butonları temizle
+    emotionSentenceDiv.innerHTML = '';
+    whySentenceDiv.innerHTML = '';
+    whyButtonsDiv.innerHTML = '';
+
+    let emotionSentence = '';
+    let whySentence = '';
+    let reasons = [];
+
+    // Duygulara göre senaryolar
+    if (emotion === 'sad') {
+        emotionSentence = 'Senin bugün biraz üzgün olduğunu hissediyorum...';
+        whySentence = 'Belki de bir şeyler üst üste geldi... Ne ile ilgili olduğunu seç ve müziğin tadını çıkar!';
+        reasons = ['aile', 'iş', 'yorgunluk', 'sebepsiz'];
+    } else if (emotion === 'happy') {
+        emotionSentence = 'Mutlu olduğunu hissediyorum...';
+        whySentence = 'Parlıyorsun bugün... Sebebini paylaş ve müziğin tadını çıkar!';
+        reasons = ['güzel haber', 'sevdiğim biri', 'başarı', 'içimden geldi'];
+    } else if (emotion === 'surprise') {
+        emotionSentence = 'Sanki bir şey seni şaşırtmış...';
+        whySentence = 'Ne oldu beklenmedik bir şey mi?';
+        reasons = ['bir haber', 'biriyle karşılaştım', 'sürpriz', 'kafam karıştı'];
+    } else if (emotion === 'anger') {
+        emotionSentence = 'Bir gerginlik seziyorum...';
+        whySentence = 'İçinde biraz öfke mi var? Nedir bunun kaynağı?';
+        reasons = ['kırgınlık', 'haksızlık', 'tatsız bir olay', 'gerginlik'];
+    } else if (emotion === 'neutral') {
+        emotionSentence = 'Bugün biraz doğal görünüyorsun. Peki ne tür şarkıların modundasın?';
+        reasons = ['pop', 'rock', 'rap', 'karışık'];
+    }
+
+    // Duyguya özel cümleleri yerleştir
+    emotionSentenceDiv.innerText = emotionSentence;
+    setTimeout(() => {
+        whySentenceDiv.innerText = whySentence;
+        
+        // 1 saniye sonra butonlar gelsin
+        setTimeout(() => {
+            reasons.forEach(reason => {
+                const btn = document.createElement('button');
+                btn.innerText = reason;
+                btn.className = 'hazirim-butonu'; // Hazırım butonuyla aynı stil
+                btn.onclick = () => {
+                    alert(`Seçilen neden: ${reason}`);
+                };
+                whyButtonsDiv.appendChild(btn);
+            });
+        }, 1000);
+    }, 2000);
+}
+
+function typeWriter(text, elementId, speed = 50) {
+    const element = document.getElementById(elementId);
+    element.innerHTML = "";
+    let i = 0;
+
+    function type() {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(type, speed);
+      }
+    }
+
+    type();
+  }
+  function animateDynamicText(text, elementId, speed = 50) {
+  const element = document.getElementById(elementId);
+  element.innerHTML = "";
+  [...text].forEach((char, index) => {
+    const span = document.createElement("span");
+    span.textContent = char === " " ? "\u00A0" : char;
+    span.style.opacity = "0";
+    span.style.display = "inline-block";
+    span.style.animation = `fadeLetterIn 0.05s forwards`;
+    span.style.animationDelay = `${index * speed}ms`;
+    element.appendChild(span);
+  });
+}
+
+
+
+
+
+
+  </script>
+</body>
+</html>
