@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import cv2
 import base64
@@ -8,7 +8,9 @@ import time
 from collections import deque, Counter
 import numpy as np
 from keras.models import load_model
-from flask import Flask, jsonify, session  # session eklediğine dikkat et
+from flask import jsonify, session
+import anthropic
+import os
 
 app = Flask(__name__)
 app.secret_key = 'gizli_bir_anahtar'  # session kullanmak için zorunlu
@@ -122,6 +124,36 @@ def video_emitter():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+_anthropic_api_key = os.environ.get('ANTHROPIC_API_KEY')
+_anthropic_client = anthropic.Anthropic(api_key=_anthropic_api_key) if _anthropic_api_key else None
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    if _anthropic_client is None:
+        return jsonify({'error': 'ANTHROPIC_API_KEY ortam değişkeni ayarlanmamış.'}), 500
+
+    data = request.get_json()
+    messages = data.get('messages', [])
+    emotion = data.get('emotion', 'Neutral')
+
+    client = _anthropic_client
+
+    system_prompt = (
+        f"Sen Soulware adlı bir duygu tabanlı müzik uygulamasının yapay zeka asistanısın. "
+        f"Kullanıcının şu anki tespit edilen duygu durumu: {emotion}. "
+        "Kullanıcıyla Türkçe konuş, empatik ve destekleyici ol. "
+        "Kullanıcının duygularını anlamaya çalış ve gerektiğinde müzik önerileri yap."
+    )
+
+    response = client.messages.create(
+        model="claude-opus-4-5",
+        max_tokens=1024,
+        system=system_prompt,
+        messages=messages
+    )
+
+    return jsonify({'response': response.content[0].text})
 
 @socketio.on('connect')
 def handle_connect():

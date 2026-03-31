@@ -312,6 +312,165 @@
 
 }
 
+/* Chat widget styles */
+#chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+#chat-toggle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #00e5ff;
+  color: #0d2538;
+  border: none;
+  cursor: pointer;
+  font-size: 28px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+  transition: transform 0.3s ease;
+}
+
+#chat-toggle:hover {
+  transform: scale(1.1);
+}
+
+#chat-panel {
+  display: none;
+  width: 340px;
+  height: 440px;
+  background: rgba(10, 20, 35, 0.97);
+  border: 2px solid #00e5ff;
+  border-radius: 20px;
+  flex-direction: column;
+  margin-bottom: 12px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+  overflow: hidden;
+}
+
+#chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+  background: rgba(0, 229, 255, 0.08);
+}
+
+#chat-header span {
+  font-family: 'Orbitron', sans-serif;
+  color: #00e5ff;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+#chat-close {
+  background: none;
+  border: none;
+  color: #00e5ff;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#chat-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(0, 229, 255, 0.4);
+  border-radius: 4px;
+}
+
+.chat-message {
+  padding: 10px 14px;
+  border-radius: 16px;
+  max-width: 82%;
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: sans-serif;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background-color: #00e5ff;
+  color: #0d2538;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.ai-message {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #e0f7fa;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+#chat-input-container {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid rgba(0, 229, 255, 0.3);
+  gap: 8px;
+}
+
+#chat-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.5);
+  border-radius: 20px;
+  padding: 10px 14px;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 13px;
+  outline: none;
+}
+
+#chat-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+#chat-input:focus {
+  border-color: #00e5ff;
+}
+
+#chat-send {
+  padding: 10px 16px;
+  background-color: #00e5ff;
+  color: #0d2538;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  transition: transform 0.2s ease, background-color 0.2s;
+  white-space: nowrap;
+}
+
+#chat-send:hover {
+  transform: scale(1.05);
+  background-color: #0288d1;
+  color: #fff;
+}
+
+#chat-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
   </style>
 </head>
@@ -349,6 +508,22 @@
       <p id="question"></p>
       
     </div>
+  </div>
+
+  <!-- Claude chat widget -->
+  <div id="chat-widget">
+    <div id="chat-panel">
+      <div id="chat-header">
+        <span>SOULWARE AI</span>
+        <button id="chat-close" title="Kapat">×</button>
+      </div>
+      <div id="chat-messages"></div>
+      <div id="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Mesajınızı yazın..." autocomplete="off">
+        <button id="chat-send">Gönder</button>
+      </div>
+    </div>
+    <button id="chat-toggle" title="AI ile Konuş">💬</button>
   </div>
 
   <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
@@ -403,11 +578,13 @@
 
       if (!shownFinal && data.final_emotion) {
      finalEmotion = data.final_emotion;
+     window.finalEmotion = finalEmotion;
      // question.textContent = `Neden "${finalEmotion}" hissediyorsun? Sebebi nedir?`;
      finalBox.style.display = "block";
      shownFinal = true;
 
      showEmotionScenario(finalEmotion);
+     if (typeof window.showChatWidget === "function") window.showChatWidget();
 
      } 
     });
@@ -773,6 +950,98 @@ function typeWriter(text, elementId, speed = 50) {
 
 
 
+
+
+// --- Claude chat widget ---
+(function () {
+  const chatWidget = document.getElementById("chat-widget");
+  const chatToggle = document.getElementById("chat-toggle");
+  const chatPanel = document.getElementById("chat-panel");
+  const chatClose = document.getElementById("chat-close");
+  const chatMessages = document.getElementById("chat-messages");
+  const chatInput = document.getElementById("chat-input");
+  const chatSendBtn = document.getElementById("chat-send");
+
+  let chatHistory = [];
+
+  chatToggle.addEventListener("click", () => {
+    const isOpen = chatPanel.style.display === "flex";
+    chatPanel.style.display = isOpen ? "none" : "flex";
+    if (!isOpen) chatInput.focus();
+  });
+
+  chatClose.addEventListener("click", () => {
+    chatPanel.style.display = "none";
+  });
+
+  chatSendBtn.addEventListener("click", sendMessage);
+  chatInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  function appendMessage(role, text) {
+    const div = document.createElement("div");
+    div.className = "chat-message " + (role === "user" ? "user-message" : "ai-message");
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    chatInput.value = "";
+    chatSendBtn.disabled = true;
+    chatHistory.push({ role: "user", content: text });
+    appendMessage("user", text);
+
+    const thinking = document.createElement("div");
+    thinking.className = "chat-message ai-message";
+    thinking.textContent = "...";
+    thinking.id = "chat-thinking";
+    chatMessages.appendChild(thinking);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: chatHistory,
+          emotion: window.finalEmotion || "Neutral"
+        })
+      });
+
+      const data = await response.json();
+      const thinkingEl = document.getElementById("chat-thinking");
+      if (thinkingEl) thinkingEl.remove();
+
+      if (data.error) {
+        appendMessage("ai", "Hata: " + data.error);
+      } else {
+        chatHistory.push({ role: "assistant", content: data.response });
+        appendMessage("ai", data.response);
+      }
+    } catch (err) {
+      console.error("Chat error:", err);
+      const thinkingEl = document.getElementById("chat-thinking");
+      if (thinkingEl) thinkingEl.remove();
+      appendMessage("ai", "Bağlantı hatası. Lütfen tekrar deneyin.");
+    } finally {
+      chatSendBtn.disabled = false;
+      chatInput.focus();
+    }
+  }
+
+  // Expose a function to reveal the chat widget when emotion is detected
+  window.showChatWidget = function () {
+    chatWidget.style.display = "flex";
+  };
+})();
 
   </script>
 </body>
